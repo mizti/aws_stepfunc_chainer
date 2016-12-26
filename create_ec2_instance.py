@@ -9,24 +9,20 @@ from pathlib import Path
 
 SPOT_PRICE = '0.2'
 REGION = 'ap-northeast-1'
-AMI_ID = 'ami-be4a24d9'
+AMI_ID = 'ami-5860093f'
 KEY_NAME = 'miz_private_key'
 INSTANCE_TYPE = 'c4.large'
 SECURITY_GRUOP_ID = ['sg-6bd2780c']
 
 REPOSITORY_URL  = 'https://github.com/mattya/chainer-pix2pix.git'
 REPOSITORY_NAME = 'chainer-pix2pix'
+BUCKET_NAME = 'test-kick-the-bucket23'
 
+f = open('user_data_shell.sh')
+shell_code = f.read().format(os.environ.get('AWS_ACCESS_KEY_ID'), os.environ.get('AWS_SECRET_ACCESS_KEY'), BUCKET_NAME ,REPOSITORY_URL, REPOSITORY_NAME)
+f.close()
 
-SHELL = '''#!/bin/sh
-sudo -s ubuntu
-cd /home/ubuntu
-git clone {0}
-cd {1}
-
-'''.format(REPOSITORY_URL, REPOSITORY_NAME)
-
-user_data = base64.encodestring(SHELL.encode('utf-8')).decode('ascii')
+user_data = base64.encodestring(shell_code.encode('utf-8')).decode('ascii')
 
 def request_spot_instance(access_key, secret_key):
     ec2_client = boto3.client('ec2',
