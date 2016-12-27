@@ -17,9 +17,10 @@ def send_sms_message(access_key, secret_key, event):
     sns_body["default"] = "Your Training Ended!!"
     topic = TOPIC_ARN
     response = sns.publish(
-        TopicArn=topic,
-        Message=json.dumps(sns_body, ensure_ascii=False),
-        MessageStructure='json'
+        TopicArn = topic,
+        Subject = 'Training ended',
+        Message = json.dumps(sns_body, ensure_ascii=False),
+        MessageStructure = 'json'
     )
     return response
 
