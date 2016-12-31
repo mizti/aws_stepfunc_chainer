@@ -1,0 +1,10 @@
+{
+    "exec_name": "pix2pix-20161231",
+    "repository_url": "https://github.com/mattya/chainer-pix2pix.git",
+    "repository_name": "chainer-pix2pix",
+    "data_dir": "/home/ubuntu/data",
+    "output_dir": "/home/ubuntu/result",
+    "data_get_command": "/home/ubuntu/.pyenv/shims/aws s3 cp s3://pix2pixfacade/ /home/ubuntu/data --recursive && mount /dev/xvdb /home/ubuntu/result && chown ubuntu:ubuntu /home/ubuntu/result",
+    "exec_command": "/home/ubuntu/.pyenv/shims/python /home/ubuntu/chainer-pix2pix/train_facade.py -g 0 -e 100 -i /home/ubuntu/data --out /home/ubuntu/result --snapshot_interval 10000"
+}
+
