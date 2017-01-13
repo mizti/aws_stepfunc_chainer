@@ -41,6 +41,7 @@ def lambda_handler(event, context):
     cd /home/ubuntu
     sudo -u ubuntu mkdir /home/ubuntu/.aws
     sudo -u ubuntu mkdir /home/ubuntu/completed
+    sudo -u ubuntu git clone {5}
     sudo -u ubuntu mkdir {0}
     sudo -u ubuntu mkdir {1}
     
@@ -59,7 +60,6 @@ def lambda_handler(event, context):
     PATH="/usr/local/cuda/bin:$PATH"
     LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
 
-    sudo -u ubuntu git clone {5}
     sudo -u ubuntu cd /home/ubuntu/{6}
     
     sudo -u ubuntu touch trace.log
