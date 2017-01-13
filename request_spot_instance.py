@@ -44,6 +44,10 @@ def lambda_handler(event, context):
     sudo -u ubuntu git clone {5}
     sudo -u ubuntu mkdir {0}
     sudo -u ubuntu mkdir {1}
+    sudo -s mount /dev/xvdb {0}
+    sudo -s chown ubuntu:ubuntu {0}
+    sudo -u ubuntu ln -s {0} /home/ubuntu/{6}/data
+
     
     sudo -u ubuntu echo "[default]" >> /home/ubuntu/.aws/credentials
     sudo -u ubuntu echo "aws_access_key_id={2}" >> /home/ubuntu/.aws/credentials
