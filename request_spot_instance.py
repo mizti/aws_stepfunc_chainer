@@ -41,14 +41,18 @@ def lambda_handler(event, context):
     cd /home/ubuntu
     sudo -u ubuntu mkdir /home/ubuntu/.aws
     sudo -u ubuntu mkdir /home/ubuntu/completed
+    sudo -u ubuntu git clone {5}
     sudo -u ubuntu mkdir {0}
     sudo -u ubuntu mkdir {1}
+    sudo -s mount /dev/xvdb {0}
+    sudo -s chown ubuntu:ubuntu {0}
+    sudo -u ubuntu ln -s {0} /home/ubuntu/{6}/data
     
     sudo -u ubuntu echo "[default]" >> /home/ubuntu/.aws/credentials
     sudo -u ubuntu echo "aws_access_key_id={2}" >> /home/ubuntu/.aws/credentials
     sudo -u ubuntu echo "aws_secret_access_key={3}" >> /home/ubuntu/.aws/credentials
 
-    sudo -u ubuntu echo "*/5 * * * * /home/ubuntu/.pyenv/shims/aws s3 sync {1} s3://{4} > /dev/null 2>&1" >> mycron
+    sudo -u ubuntu echo "*/5 * * * * /home/ubuntu/.pyenv/shims/aws s3 sync {1} s3://{4} > /dev/null 2>&1 && /bin/rm {1}/*.npz" >> mycron
     sudo -u ubuntu echo "*/1 * * * * /home/ubuntu/.pyenv/shims/aws s3 cp {1}/log s3://{4} > /dev/null 2>&1" >> mycron
     sudo -u ubuntu echo "*/1 * * * * /home/ubuntu/.pyenv/shims/aws s3 cp /home/ubuntu/trace.log s3://{4} > /dev/null 2>&1" >> mycron
     sudo -u ubuntu echo "*/1 * * * * /home/ubuntu/.pyenv/shims/aws s3 sync /home/ubuntu/completed s3://{4} > /dev/null 2>&1" >> mycron
@@ -59,7 +63,6 @@ def lambda_handler(event, context):
     PATH="/usr/local/cuda/bin:$PATH"
     LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
 
-    sudo -u ubuntu git clone {5}
     sudo -u ubuntu cd /home/ubuntu/{6}
     
     sudo -u ubuntu touch trace.log
