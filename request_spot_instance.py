@@ -14,8 +14,11 @@ KEY_NAME = 'miz_private_key'
 #INSTANCE_TYPE = 'g2.2xlarge'
 INSTANCE_TYPE = 'p2.xlarge'
 SECURITY_GRUOP_ID = ['sg-240e8a32']
+
+# For p2 / VPC
 SECURITY_GROUP_ID_FOR_VPC = ['sg-3cfda241']
 SUBNET_ID = 'subnet-c0cb67fc'
+VOLUME_SIZE = 15
 
 def request_spot_instance(user_data):
     ec2_client = boto3.client('ec2',
@@ -24,6 +27,16 @@ def request_spot_instance(user_data):
 
     response = ''
     if 'p2.' in INSTANCE_TYPE:
+        blockdevmap = [
+            {
+                'DeviceName': '/dev/xvda',
+                'Ebs': {
+                    'VolumeSize': VOLUME_SIZE,
+                    'DeleteOnTermination': True,
+                    'VolumeType': 'gp2'
+                }
+            }
+        ]
         response = ec2_client.request_spot_instances(
             SpotPrice = SPOT_PRICE,
             Type = 'one-time',
