@@ -6,29 +6,50 @@ import logging
 import base64
 import os
 
-SPOT_PRICE = '0.8'
-REGION = 'ap-northeast-1'
-AMI_ID = 'ami-5860093f'
+#SPOT_PRICE = '1.1'
+SPOT_PRICE = '2.0'
+REGION = 'us-east-1'
+AMI_ID = 'ami-a351abb5'
 KEY_NAME = 'miz_private_key'
-INSTANCE_TYPE = 'g2.2xlarge'
-SECURITY_GRUOP_ID = ['sg-6bd2780c']
+#INSTANCE_TYPE = 'g2.2xlarge'
+INSTANCE_TYPE = 'p2.xlarge'
+SECURITY_GRUOP_ID = ['sg-240e8a32']
+SECURITY_GROUP_ID_FOR_VPC = ['sg-3cfda241']
+SUBNET_ID = 'subnet-c0cb67fc'
 
 def request_spot_instance(user_data):
     ec2_client = boto3.client('ec2',
         region_name = REGION
     )
-    response = ec2_client.request_spot_instances(
-        SpotPrice = SPOT_PRICE,
-        Type = 'one-time',
-        LaunchSpecification = {
-            'ImageId': AMI_ID,
-            'KeyName': KEY_NAME,
-            'InstanceType': INSTANCE_TYPE,
-            'UserData': user_data,
-            'Placement':{},
-            'SecurityGroupIds': SECURITY_GRUOP_ID
-        }
-    )
+
+    response = ''
+    if 'p2.' in INSTANCE_TYPE:
+        response = ec2_client.request_spot_instances(
+            SpotPrice = SPOT_PRICE,
+            Type = 'one-time',
+            LaunchSpecification = {
+                'ImageId': AMI_ID,
+                'KeyName': KEY_NAME,
+                'InstanceType': INSTANCE_TYPE,
+                'UserData': user_data,
+                'Placement':{},
+                'SubnetId': SUBNET_ID,
+                'SecurityGroupIds': SECURITY_GROUP_ID_FOR_VPC
+            }
+        )
+    else:
+        response = ec2_client.request_spot_instances(
+          SpotPrice = SPOT_PRICE,
+            Type = 'one-time',
+            LaunchSpecification = {
+                'ImageId': AMI_ID,
+                'KeyName': KEY_NAME,
+                'InstanceType': INSTANCE_TYPE,
+                'UserData': user_data,
+                'Placement':{},
+                'SecurityGroupIds': SECURITY_GRUOP_ID
+            }
+        )
     return response
 
 def lambda_handler(event, context):
@@ -95,6 +116,3 @@ def lambda_handler(event, context):
     response = request_spot_instance(user_data)
     event["spot_instance_request_id"] = response["SpotInstanceRequests"][0]["SpotInstanceRequestId"]
     return event
-
-if __name__ == "__main__":
-    lambda_handler("","")
